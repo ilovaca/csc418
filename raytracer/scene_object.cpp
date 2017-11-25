@@ -46,7 +46,12 @@ bool UnitSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	
 	if (x >= -0.5 && x <= 0.5 && y >= -0.5 && y <= 0.5)
 	{
-		Vector3D norm = transNorm(modelToWorld, Vector3D(0, 0, 1));
+		if (!ray.intersection.none && ray.intersection.t_value < t)
+		{
+			return false;
+		}
+		
+		Vector3D norm = transNorm(worldToModel, Vector3D(0, 0, 1));
 		
 		norm.normalize();
 		
@@ -54,9 +59,7 @@ bool UnitSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		ray.intersection.point  = modelToWorld * Point3D(x, y, 0);
 		ray.intersection.normal = norm;
 		ray.intersection.none = false;
-		if (!ray.intersection.none)
-			ray.intersection.t_value = ray.intersection.t_value < t ? 
-				ray.intersection.t_value : t;
+		ray.intersection.t_value = t;
 		
 		return true;
 	}
@@ -115,11 +118,16 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	}
 	if (t_1 < 0)
 	{
+		if (!ray.intersection.none && ray.intersection.t_value < t_2)
+		{
+			return false;
+		}
+		
 		double x = tf_ray.origin[0] + t_2 * tf_ray.dir[0];
 		double y = tf_ray.origin[1] + t_2 * tf_ray.dir[1];
 		double z = tf_ray.origin[2] + t_2 * tf_ray.dir[2];
 		
-		Vector3D norm = transNorm(modelToWorld, Vector3D(x, y, z));
+		Vector3D norm = transNorm(worldToModel, Vector3D(x, y, z));
 		
 		norm.normalize();
 		
@@ -127,19 +135,22 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		ray.intersection.point  = modelToWorld * Point3D(x, y, z);
 		ray.intersection.normal = norm;
 		ray.intersection.none = false;
-		if (!ray.intersection.none)
-			ray.intersection.t_value = ray.intersection.t_value < t_2 ? 
-				ray.intersection.t_value : t_2;
+		ray.intersection.t_value = t_2;
 		
 		return true;
 	}
 	if (t_2 < 0)
 	{
+		if (!ray.intersection.none && ray.intersection.t_value < t_1)
+		{
+			return false;
+		}
+		
 		double x = tf_ray.origin[0] + t_1 * tf_ray.dir[0];
 		double y = tf_ray.origin[1] + t_1 * tf_ray.dir[1];
 		double z = tf_ray.origin[2] + t_1 * tf_ray.dir[2];
 		
-		Vector3D norm = transNorm(modelToWorld, Vector3D(x, y, z));
+		Vector3D norm = transNorm(worldToModel, Vector3D(x, y, z));
 		
 		norm.normalize();
 		
@@ -147,19 +158,22 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		ray.intersection.point  = modelToWorld * Point3D(x, y, z);
 		ray.intersection.normal = norm;
 		ray.intersection.none = false;
-		if (!ray.intersection.none)
-			ray.intersection.t_value = ray.intersection.t_value < t_1 ? 
-				ray.intersection.t_value : t_1;
+		ray.intersection.t_value = t_1;
 		
 		return true;
 	}
 	double t = t_1 < t_2 ? t_1 : t_2;
 	
+	if (!ray.intersection.none && ray.intersection.t_value < t)
+	{
+		return false;
+	}
+	
 	double x = tf_ray.origin[0] + t * tf_ray.dir[0];
 	double y = tf_ray.origin[1] + t * tf_ray.dir[1];
 	double z = tf_ray.origin[2] + t * tf_ray.dir[2];
 
-	Vector3D norm = transNorm(modelToWorld, Vector3D(x, y, z));
+	Vector3D norm = transNorm(worldToModel, Vector3D(x, y, z));
 
 	norm.normalize();
 
@@ -167,9 +181,7 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	ray.intersection.point  = modelToWorld * Point3D(x, y, z);
 	ray.intersection.normal = norm;
 	ray.intersection.none = false;
-	if (!ray.intersection.none)
-		ray.intersection.t_value = ray.intersection.t_value < t ? 
-			ray.intersection.t_value : t;
+	ray.intersection.t_value = t;
 
 	return true;
 }
