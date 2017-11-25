@@ -1,3 +1,5 @@
 *.o
+*.bmp
+*.out
 raytracer
 nbproject/*
