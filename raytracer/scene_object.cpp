@@ -54,7 +54,9 @@ bool UnitSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		ray.intersection.point  = modelToWorld * Point3D(x, y, 0);
 		ray.intersection.normal = norm;
 		ray.intersection.none = false;
-		ray.intersection.t_value = t;
+		if (!ray.intersection.none)
+			ray.intersection.t_value = ray.intersection.t_value < t ? 
+				ray.intersection.t_value : t;
 		
 		return true;
 	}
@@ -125,7 +127,9 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		ray.intersection.point  = modelToWorld * Point3D(x, y, z);
 		ray.intersection.normal = norm;
 		ray.intersection.none = false;
-		ray.intersection.t_value = t_2;
+		if (!ray.intersection.none)
+			ray.intersection.t_value = ray.intersection.t_value < t_2 ? 
+				ray.intersection.t_value : t_2;
 		
 		return true;
 	}
@@ -143,7 +147,9 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		ray.intersection.point  = modelToWorld * Point3D(x, y, z);
 		ray.intersection.normal = norm;
 		ray.intersection.none = false;
-		ray.intersection.t_value = t_1;
+		if (!ray.intersection.none)
+			ray.intersection.t_value = ray.intersection.t_value < t_1 ? 
+				ray.intersection.t_value : t_1;
 		
 		return true;
 	}
@@ -161,7 +167,9 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	ray.intersection.point  = modelToWorld * Point3D(x, y, z);
 	ray.intersection.normal = norm;
 	ray.intersection.none = false;
-	ray.intersection.t_value = t;
+	if (!ray.intersection.none)
+		ray.intersection.t_value = ray.intersection.t_value < t ? 
+			ray.intersection.t_value : t;
 
 	return true;
 }
