@@ -9,6 +9,7 @@ CSC418, SPRING 2005
 
 #include "raytracer.h"
 #include <cstdlib>
+#include <GL/gl.h>
 
 int main(int argc, char* argv[])
 {
@@ -51,7 +52,7 @@ int main(int argc, char* argv[])
 	SceneDagNode* cylinder = raytracer.addObject(new UnitCylinder(), &gold);
 
 	// Apply some transformations to the unit square.
-	double factor1[3] = { 1.0, 2.0, 1.0 };
+	double factor1[3] = { 1.0, 1.0, 1.0 };
 	double factor2[3] = { 6.0, 6.0, 6.0 };
 	double factor3[3] = { 0.5, 0.5, 0.5 };
 	raytracer.translate(sphere, Vector3D(0, 0, -5));
