@@ -141,6 +141,8 @@ struct Material {
 	Colour specular;
 	// Specular expoent.
 	double specular_exp;
+	// Reflection of the object, in (0,1)
+	double reflection_coeff;
 };
 
 struct Intersection {
