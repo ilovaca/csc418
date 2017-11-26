@@ -47,10 +47,12 @@ int main(int argc, char* argv[])
 	// Add a unit square into the scene with material mat.
 	SceneDagNode* sphere = raytracer.addObject(new UnitSphere(), &gold);
 	SceneDagNode* plane = raytracer.addObject(new UnitSquare(), &jade);
+	SceneDagNode* cylinder = raytracer.addObject(new UnitCylinder(), &gold);
 
 	// Apply some transformations to the unit square.
 	double factor1[3] = { 1.0, 2.0, 1.0 };
 	double factor2[3] = { 6.0, 6.0, 6.0 };
+	double factor3[3] = { 0.5, 0.5, 0.5 };
 	raytracer.translate(sphere, Vector3D(0, 0, -5));
 	raytracer.rotate(sphere, 'x', -45);
 	raytracer.rotate(sphere, 'z', 45);
@@ -60,6 +62,11 @@ int main(int argc, char* argv[])
 	raytracer.rotate(plane, 'z', 45);
 	raytracer.scale(plane, Point3D(0, 0, 0), factor2);
 
+	raytracer.translate(cylinder, Vector3D(-1, -1, -4));
+	raytracer.rotate(cylinder, 'x', 60);
+	raytracer.rotate(cylinder, 'y', 90);
+	raytracer.scale(cylinder, Point3D(0, 0, 0), factor3);
+	
 	// Render the scene, feel free to make the image smaller for
 	// testing purposes.	
 	raytracer.render(width, height, eye, view, up, fov, "view1.bmp");
