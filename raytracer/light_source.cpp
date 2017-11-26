@@ -30,7 +30,7 @@ void PointLight::shade( Ray3D& ray ) {
 	auto lightDir = (_pos - point);
 	lightDir.normalize();
 	// normal at point
-	auto normal = ray.intersection.normal;
+	auto normal = /*Vector3D(0, 0, 1);*/ ray.intersection.normal;
 	// diffuse component. FIXME
 	auto diffuseLight = std::max(normal.dot(lightDir), 0.0);
 	auto diffuseComponent =  material. diffuse * Colour(diffuseLight, diffuseLight, diffuseLight);
@@ -46,6 +46,6 @@ void PointLight::shade( Ray3D& ray ) {
 	// final color, should be added to existing color of the ray
 	auto finalColor = (material.ambient + diffuseComponent + specularComponent);
 	finalColor.clamp();
-	ray.col = ray.col + material.ambient;
+	ray.col = ray.col + finalColor;
 }
 

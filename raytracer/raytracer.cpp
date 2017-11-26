@@ -232,7 +232,7 @@ void Raytracer::flushPixelBuffer( std::string file_name ) {
 Colour Raytracer::shadeRay( Ray3D& ray, int depth ) {
     Colour col(0.0, 0.0, 0.0); 
     traverseScene(_root, ray); 
-    if (depth > 10	) {return col;}
+    if (depth > 10) {return col;}
 
     // Don't bother shading if the ray didn't hit 
     // anything.
@@ -245,6 +245,7 @@ Colour Raytracer::shadeRay( Ray3D& ray, int depth ) {
 	    // reflecRay.origin = ray.intersection.point;
 	    // reflecRay.dir = ray.dir - 2 * (ray.dir.dot(normal)*normal);
 	    // col = col + shadeRay(reflecRay, depth + 1);
+	    // col.clamp();
     }
 
     // You'll want to call shadeRay recursively (with a different ray, 
