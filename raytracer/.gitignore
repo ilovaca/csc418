@@ -1,5 +1,6 @@
 *.o
-*.bmp
+view1.bmp
+view2.bmp
 *.out
 raytracer
 nbproject/*

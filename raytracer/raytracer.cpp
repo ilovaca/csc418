@@ -229,15 +229,22 @@ void Raytracer::flushPixelBuffer( std::string file_name ) {
     delete _bbuffer;
 }
 
-Colour Raytracer::shadeRay( Ray3D& ray ) {
+Colour Raytracer::shadeRay( Ray3D& ray, int depth ) {
     Colour col(0.0, 0.0, 0.0); 
     traverseScene(_root, ray); 
+    if (depth > 10	) {return col;}
 
     // Don't bother shading if the ray didn't hit 
     // anything.
     if (!ray.intersection.none) {
         computeShading(ray); 
-        col = ray.col;  
+        col = ray.col;
+	    // Reflective Ray, starting from intersection point
+	    // auto normal = ray.intersection.normal;
+	    // Ray3D reflecRay;
+	    // reflecRay.origin = ray.intersection.point;
+	    // reflecRay.dir = ray.dir - 2 * (ray.dir.dot(normal)*normal);
+	    // col = col + shadeRay(reflecRay, depth + 1);
     }
 
     // You'll want to call shadeRay recursively (with a different ray, 
@@ -276,7 +283,7 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
 			ray.origin = viewToWorld * origin;
 			ray.dir = viewToWorld * (imagePlane - origin);
 			ray.dir.normalize();
-			Colour col = shadeRay(ray); 
+			Colour col = shadeRay(ray, 0); 
 
 			_rbuffer[i*width+j] = int(col[0]*255);
 			_gbuffer[i*width+j] = int(col[1]*255);

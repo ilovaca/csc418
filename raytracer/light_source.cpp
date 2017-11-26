@@ -46,6 +46,6 @@ void PointLight::shade( Ray3D& ray ) {
 	// final color, should be added to existing color of the ray
 	auto finalColor = (material.ambient + diffuseComponent + specularComponent);
 	finalColor.clamp();
-	ray.col = ray.col + finalColor;
+	ray.col = ray.col + material.ambient;
 }
 
