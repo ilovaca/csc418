@@ -2,11 +2,11 @@ CC = g++
 CFLAGS = -pg -g -O2 -Wall
 CPPFLAGS = -std=c++11
 LDFLAGS = -pg -g
-LIBS = -lm
+LIBS = -lm -lGL -lpng
 
-raytracer:  main.o raytracer.o util.o light_source.o scene_object.o bmp_io.o
+raytracer:  main.o raytracer.o util.o light_source.o scene_object.o bmp_io.o texture.o
 	$(CC) $(CFLAGS) -o raytracer \
-	main.o raytracer.o util.o light_source.o scene_object.o bmp_io.o $(LIBS)
+	main.o raytracer.o util.o light_source.o scene_object.o bmp_io.o texture.o $(LIBS)
 
 clean:
 	-rm -f core *.o
