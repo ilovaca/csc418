@@ -17,6 +17,7 @@
 extern int width;
 extern int height;
 extern GLubyte *textureImage;
+extern Material _2D_Texture;
 
 void PointLight::shade( Ray3D& ray ) {
 	// TODO: implement this function to fill in values for ray.col 
@@ -25,18 +26,18 @@ void PointLight::shade( Ray3D& ray ) {
 	//
 	// It is assumed at this point that the intersection information in ray 
 	// is available.  So be sure that traverseScene() is called on the ray 
-	// before this function.  
+	// before this function.
 
 	// point of intersection
 	auto point = ray.intersection.point;
 	// point material
 	auto material = *(ray.intersection.mat);
 
-	if (material.ambient.equalTo(Colour(0, 0, 0)))
+
+	if (ray.intersection.mat == &_2D_Texture)
 	{
-		// std::cout << ray.intersection.point_obj_space; 
-		int x = width  * (ray.intersection.point_obj_space[0] + 0.5);
-		int y = height * (ray.intersection.point_obj_space[1] + 0.5);
+		int x = width  * (std::atan2(ray.intersection.point_obj_space[0], ray.intersection.point_obj_space[2]) / (2 * M_PI) + 0.5);
+		int y = height * (std::asin (ray.intersection.point_obj_space[1]) / M_PI + 0.5);
 
 		float r = textureImage[y * 3 * width + x * 3 + 0] * 1.0 / 255;
 		float g = textureImage[y * 3 * width + x * 3 + 1] * 1.0 / 255;

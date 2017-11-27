@@ -11,6 +11,10 @@ CSC418, SPRING 2005
 #include "texture.h"
 #include <cstdlib>
 
+Material _2D_Texture (Colour(0.3, 0.3, 0.3), Colour(0.75164, 0.60648, 0.22648),
+		Colour(0.628281, 0.555802, 0.366065),
+		51.2);
+
 int main(int argc, char* argv[])
 {
 	// Build your scene and setup your camera here, by calling 
@@ -37,10 +41,14 @@ int main(int argc, char* argv[])
 	double fov = 60;
 
 	// Defines a material for shading.
+	_2D_Texture.reflection_coeff = 0.4;
+
+
 	Material gold(Colour(0.3, 0.3, 0.3), Colour(0.75164, 0.60648, 0.22648),
 		Colour(0.628281, 0.555802, 0.366065),
 		51.2);
-	gold.reflection_coeff = 0.4;
+	gold.reflection_coeff = 0.4;	
+
 	Material jade(Colour(0, 0, 0), Colour(0.54, 0.89, 0.63),
 		Colour(0.316228, 0.316228, 0.316228),
 		12.8);
@@ -51,7 +59,7 @@ int main(int argc, char* argv[])
 	// raytracer.addLightSource(new AreaLight(Point3D(0,0,50),
 	// 	1.0, Vector3D(0,0,-1), Colour(1.0, 1.0, 0.5)));
 	// Add a unit square into the scene with material mat.
-	SceneDagNode* sphere = raytracer.addObject(new UnitSphere(), &gold);
+	SceneDagNode* sphere = raytracer.addObject(new UnitSphere(), &_2D_Texture);
 	SceneDagNode* plane = raytracer.addObject(new UnitSquare(), &jade);
 	SceneDagNode* cylinder = raytracer.addObject(new UnitCylinder(), &gold);
 
