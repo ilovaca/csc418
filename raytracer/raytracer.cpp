@@ -267,6 +267,7 @@ Colour Raytracer::shadeRay( Ray3D& ray, int depth ) {
 	    // Reflective Ray, starting from intersection point
 	    auto normal = ray.intersection.normal;
 	    auto coeff = ray.intersection.mat->reflection_coeff;
+	    // reflection
 	    if (coeff > 0) {
 		    Ray3D reflecRay;
 		    // BRDF random sampling
@@ -284,10 +285,10 @@ Colour Raytracer::shadeRay( Ray3D& ray, int depth ) {
 		    reflecRay.dir = x * u + y * v + z * reflecDir;
 		    reflecRay.dir.normalize();
 		    // avoid same intersection
-		    reflecRay.origin = ray.intersection.point + 0.01*ray.dir;
+		    reflecRay.origin = ray.intersection.point + 0.0001*ray.dir;
 		    auto reflecCol = shadeRay(reflecRay, depth + 1);
 		    if (reflecCol[0] > 0.0 && reflecCol[1] > 0.0 && reflecCol[2] > 0.0){
-		    	// ray.col = (1.0 - coeff)*ray.col + coeff * ray.intersection.mat->specular * reflecCol;
+		    	// col = (1.0 - coeff) * ray.col + coeff * ray.intersection.mat->specular * reflecCol;
 		    	col = (1.0 - coeff) * ray.col + coeff * reflecCol;
 		    } else {
 		    	col = ray.col;
@@ -320,46 +321,21 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
             // image plane is at z = -1.
             Point3D origin(0, 0, 0);
 			Point3D imagePlane;
-			// imagePlane[0] = (-double(width)/2 + 0.5 + j)/factor;
-			// imagePlane[1] = (-double(height)/2 + 0.5 + i)/factor;
 			imagePlane[2] = -1;
-
-			// TODO: Convert ray to world space and call 
-			// shadeRay(ray) to generate pixel colour. 	
-
-			//Anti-aliasing 
+			//Anti-aliasing by 9x supersampling
 			Colour col ;
-			// for (double subx = i; subx < i + 1.0; subx += 0.5) {
-			// 	for (double suby = j; suby < j + 1.0; suby += 0.5) {
-			// 		imagePlane[0] = (-double(width)/2 + 0.5 + suby)/factor;
-			// 		imagePlane[1] = (-double(height)/2 + 0.5 + subx)/factor;
-			// 		Ray3D ray;
-			// 		// initialize ray origin and direction in **WORLD** space
-			// 		ray.origin = viewToWorld * origin;
-			// 		ray.dir = viewToWorld * (imagePlane - origin);
-			// 		ray.dir.normalize();
-			// 		col = col + 0.25 * shadeRay(ray, 0); 		
-			// 	}
-			// }
-			for (int u=-1; u<=1; u++){
-				for(int v=-1; v<=1; v++){
-					imagePlane[0] = (-double(width)/2 + u*0.3+0.5 + j)/factor;
-					imagePlane[1] = (-double(height)/2 +v*0.3+0.5 + i)/factor;
+			for (int u=0; u< 10; u++){
+				for(int v=0; v< 10; v++){
+					imagePlane[0] = (-double(width)/2 + u*0.1 +0.5 + j)/factor;
+					imagePlane[1] = (-double(height)/2 + v*0.1 +0.5 + i)/factor;
  					Ray3D ray;
 					// initialize ray origin and direction in **WORLD** space
 					ray.origin = viewToWorld * origin;
 					ray.dir = viewToWorld * (imagePlane - origin);
 					ray.dir.normalize();
-					col = col + 1.0/9.0 * shadeRay(ray, 0); 
+					col = col + 1.0/100 * shadeRay(ray, 0); 
 				}
 			}
-			// Ray3D ray;
-			// // initialize ray origin and direction in **WORLD** space
-			// ray.origin = viewToWorld * origin;
-			// ray.dir = viewToWorld * (imagePlane - origin);
-			// ray.dir.normalize();
-			// Colour col = shadeRay(ray, 0); 
-
 			_rbuffer[i*width+j] = int(col[0]*255);
 			_gbuffer[i*width+j] = int(col[1]*255);
 			_bbuffer[i*width+j] = int(col[2]*255);
