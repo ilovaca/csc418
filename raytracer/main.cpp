@@ -41,15 +41,16 @@ int main(int argc, char* argv[])
 	Material gold(Colour(0.3, 0.3, 0.3), Colour(0.75164, 0.60648, 0.22648),
 		Colour(0.628281, 0.555802, 0.366065),
 		51.2);
-	gold.reflection_coeff = 0.5;
+	gold.reflection_coeff = 0.4;
 	Material jade(Colour(0, 0, 0), Colour(0.54, 0.89, 0.63),
 		Colour(0.316228, 0.316228, 0.316228),
 		12.8);
-	jade.reflection_coeff = 0.5;
+	jade.reflection_coeff = 0.3;
 	// Defines a point light source.
 	raytracer.addLightSource(new PointLight(Point3D(0, 0, 5),
 		Colour(0.9, 0.9, 0.9)));
-
+	// raytracer.addLightSource(new AreaLight(Point3D(0,0,50),
+	// 	1.0, Vector3D(0,0,-1), Colour(1.0, 1.0, 0.5)));
 	// Add a unit square into the scene with material mat.
 	SceneDagNode* sphere = raytracer.addObject(new UnitSphere(), &gold);
 	SceneDagNode* plane = raytracer.addObject(new UnitSquare(), &jade);
