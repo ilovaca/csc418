@@ -16,6 +16,14 @@
 #include <cmath>
 #include <iostream>
 #include <cstdlib>
+#include <random>
+
+double erand()
+{
+	static std::mt19937 generator;
+	std::uniform_real_distribution<double> distribution;
+	return distribution(generator);
+};
 
 Raytracer::Raytracer() : _lightSource(NULL) {
 	_root = new SceneDagNode();
@@ -207,7 +215,24 @@ void Raytracer::computeShading( Ray3D& ray ) {
 
         // Implement shadows here if needed.
 
-        curLight->light->shade(ray);
+        // shadows
+        // shoot a ray from the intersection to light source.
+        auto lightPos = curLight->light->get_position();
+        auto lightDir = lightPos - ray.intersection.point;
+        auto distanceToLight = lightDir.length();
+        lightDir.normalize();
+        Ray3D shadowRay(ray.intersection.point + 0.001 * lightDir, lightDir);
+        // see if this ray hits any object
+        traverseScene(_root, shadowRay);
+        if (!shadowRay.intersection.none) {
+        	if(shadowRay.intersection.t_value <= distanceToLight) {
+        		ray.col = ray.intersection.mat->ambient;
+        		ray.col.clamp();
+        	}
+        } else {
+        	curLight->light->shade(ray);
+        }
+
         curLight = curLight->next;
     }
 }
@@ -244,19 +269,34 @@ Colour Raytracer::shadeRay( Ray3D& ray, int depth ) {
 	    auto coeff = ray.intersection.mat->reflection_coeff;
 	    if (coeff > 0) {
 		    Ray3D reflecRay;
-		    reflecRay.dir = ray.dir - 2 * (ray.dir.dot(normal)*normal);
+		    // BRDF random sampling
+		    auto reflecDir = ray.dir - 2 * (ray.dir.dot(normal)*normal);
+		    auto u = reflecDir.cross(normal);
+			u.normalize();
+			auto v = reflecDir.cross(u);
+			v.normalize();
+			double theta = acos(pow(erand(), 1.0 / (ray.intersection.mat->specular_exp + 1)));
+			double phi = 2 * M_PI * erand();
+			double x = sin(theta) * cos(phi);
+			double y = sin(theta) * sin(phi);
+			double z = cos(theta);
+
+		    reflecRay.dir = x * u + y * v + z * reflecDir;
 		    reflecRay.dir.normalize();
+		    // avoid same intersection
 		    reflecRay.origin = ray.intersection.point + 0.01*ray.dir;
 		    auto reflecCol = shadeRay(reflecRay, depth + 1);
 		    if (reflecCol[0] > 0.0 && reflecCol[1] > 0.0 && reflecCol[2] > 0.0){
-		    	ray.col = (1.0 - coeff) * ray.col + coeff * reflecCol;
+		    	// ray.col = (1.0 - coeff)*ray.col + coeff * ray.intersection.mat->specular * reflecCol;
+		    	col = (1.0 - coeff) * ray.col + coeff * reflecCol;
+		    } else {
+		    	col = ray.col;
+		    	// ray.col = ray.col + ray.intersection.mat->specular * reflecCol;
 		    }
+			
 		}
     }
-
-    // You'll want to call shadeRay recursively (with a different ray, 
-    // of course) here to implement reflection/refraction effects.  
-    col = ray.col;
+    // col = ray.col;
 	col.clamp();
 
     return col; 
@@ -280,19 +320,45 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
             // image plane is at z = -1.
             Point3D origin(0, 0, 0);
 			Point3D imagePlane;
-			imagePlane[0] = (-double(width)/2 + 0.5 + j)/factor;
-			imagePlane[1] = (-double(height)/2 + 0.5 + i)/factor;
+			// imagePlane[0] = (-double(width)/2 + 0.5 + j)/factor;
+			// imagePlane[1] = (-double(height)/2 + 0.5 + i)/factor;
 			imagePlane[2] = -1;
 
 			// TODO: Convert ray to world space and call 
 			// shadeRay(ray) to generate pixel colour. 	
-			
-			Ray3D ray;
-			// initialize ray origin and direction in **WORLD** space
-			ray.origin = viewToWorld * origin;
-			ray.dir = viewToWorld * (imagePlane - origin);
-			ray.dir.normalize();
-			Colour col = shadeRay(ray, 0); 
+
+			//Anti-aliasing 
+			Colour col ;
+			// for (double subx = i; subx < i + 1.0; subx += 0.5) {
+			// 	for (double suby = j; suby < j + 1.0; suby += 0.5) {
+			// 		imagePlane[0] = (-double(width)/2 + 0.5 + suby)/factor;
+			// 		imagePlane[1] = (-double(height)/2 + 0.5 + subx)/factor;
+			// 		Ray3D ray;
+			// 		// initialize ray origin and direction in **WORLD** space
+			// 		ray.origin = viewToWorld * origin;
+			// 		ray.dir = viewToWorld * (imagePlane - origin);
+			// 		ray.dir.normalize();
+			// 		col = col + 0.25 * shadeRay(ray, 0); 		
+			// 	}
+			// }
+			for (int u=-1; u<=1; u++){
+				for(int v=-1; v<=1; v++){
+					imagePlane[0] = (-double(width)/2 + u*0.3+0.5 + j)/factor;
+					imagePlane[1] = (-double(height)/2 +v*0.3+0.5 + i)/factor;
+ 					Ray3D ray;
+					// initialize ray origin and direction in **WORLD** space
+					ray.origin = viewToWorld * origin;
+					ray.dir = viewToWorld * (imagePlane - origin);
+					ray.dir.normalize();
+					col = col + 1.0/9.0 * shadeRay(ray, 0); 
+				}
+			}
+			// Ray3D ray;
+			// // initialize ray origin and direction in **WORLD** space
+			// ray.origin = viewToWorld * origin;
+			// ray.dir = viewToWorld * (imagePlane - origin);
+			// ray.dir.normalize();
+			// Colour col = shadeRay(ray, 0); 
 
 			_rbuffer[i*width+j] = int(col[0]*255);
 			_gbuffer[i*width+j] = int(col[1]*255);

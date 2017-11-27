@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <png.h>
 #include <iostream>
- 
+#include <memory.h>
 GLubyte *textureImage;
 
 bool loadPngImage(char *name, int &outWidth, int &outHeight, bool &outHasAlpha, GLubyte **outData) {
