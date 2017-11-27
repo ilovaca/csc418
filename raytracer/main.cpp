@@ -8,6 +8,7 @@ CSC418, SPRING 2005
 
 
 #include "raytracer.h"
+#include "texture.h"
 #include <cstdlib>
 #include <GL/gl.h>
 
@@ -26,6 +27,9 @@ int main(int argc, char* argv[])
 		width = atoi(argv[1]);
 		height = atoi(argv[2]);
 	}
+	
+	// Initialize texture.
+	texture_init();
 
 	// Camera parameters.
 	Point3D eye(0, 0, 1);

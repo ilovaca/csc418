@@ -130,12 +130,14 @@ bool loadPngImage(char *name, int &outWidth, int &outHeight, bool &outHasAlpha, 
 
 void texture_init()
 {
+    /*
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glEnable(GL_DEPTH_TEST);
     // The following two lines enable semi transparent
     glEnable(GL_BLEND);
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
- 
+     */
+	
     int width, height;
     bool hasAlpha;
     char filename[] = "earthmap.png";
@@ -145,6 +147,8 @@ void texture_init()
         return;
     }
     std::cout << "Image loaded " << width << " " << height << " alpha " << hasAlpha << std::endl;
+    
+    /*
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTexImage2D(GL_TEXTURE_2D, 0, hasAlpha ? 4 : 3, width,
                  height, 0, hasAlpha ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE,
@@ -155,4 +159,5 @@ void texture_init()
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glEnable(GL_TEXTURE_2D);
     glShadeModel(GL_FLAT);
+     */
 }
