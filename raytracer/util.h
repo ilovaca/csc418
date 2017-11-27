@@ -117,6 +117,7 @@ public:
 	Colour operator *(const Colour& other); 
 	double& operator[](int i);  
 	double operator[](int i) const; 
+	bool equalTo(const Colour& other) const;
     
 	void clamp(); 	
 
@@ -147,7 +148,7 @@ struct Material {
 
 struct Intersection {
 	// Location of intersection.
-	Point3D point;
+	Point3D point, point_obj_space;
 	// Normal at the intersection.
 	Vector3D normal;
 	// Material at the intersection.

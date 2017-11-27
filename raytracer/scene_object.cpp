@@ -61,6 +61,7 @@ bool UnitSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		
 		// transform everything back to the world coordinate
 		ray.intersection.point  = modelToWorld * Point3D(x, y, 0);
+		ray.intersection.point_obj_space = Point3D(x, y, 0);
 		ray.intersection.normal = norm;
 		ray.intersection.none = false;
 		ray.intersection.t_value = t;
@@ -237,6 +238,7 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 
 		ray.intersection.t_value = t;
 		ray.intersection.point = modelToWorld * intersect;
+		ray.intersection.point_obj_space = intersect;
 		ray.intersection.normal = transNorm(worldToModel, n);
 		ray.intersection.normal.normalize();
 		ray.intersection.none = false;
@@ -342,6 +344,7 @@ bool UnitCylinder::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 
 	// transform everything back to the world coordinate
 	ray.intersection.point  = modelToWorld * Point3D(x, y, z);
+	ray.intersection.point_obj_space = Point3D(x, y, z);
 	ray.intersection.normal = norm;
 	ray.intersection.none = false;
 	ray.intersection.t_value = t;
