@@ -10,7 +10,6 @@ CSC418, SPRING 2005
 #include "raytracer.h"
 #include "texture.h"
 #include <cstdlib>
-#include <GL/gl.h>
 
 int main(int argc, char* argv[])
 {
