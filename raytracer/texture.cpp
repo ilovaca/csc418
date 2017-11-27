@@ -10,6 +10,8 @@
 #include <png.h>
 #include <iostream>
 #include <memory.h>
+
+int width, height;
 GLubyte *textureImage;
 
 bool loadPngImage(char *name, int &outWidth, int &outHeight, bool &outHasAlpha, GLubyte **outData) {
@@ -138,7 +140,6 @@ void texture_init()
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
      */
 	
-    int width, height;
     bool hasAlpha;
     char filename[] = "earthmap.png";
     bool success = loadPngImage(filename, width, height, hasAlpha, &textureImage);
