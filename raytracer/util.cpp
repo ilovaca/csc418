@@ -230,6 +230,13 @@ double Colour::operator[](int i) const {
 	return m_data[i];
 }
 
+bool Colour::equalTo(const Colour& other) const {
+	return 
+		m_data[0] == other.m_data[0] &&
+	 	m_data[1] == other.m_data[1] &&
+		m_data[2] == other.m_data[2];
+}
+
 void Colour::clamp() {
 	for (int i = 0; i < 3; i++) {
 		if (m_data[i] > 1.0) m_data[i] = 1.0; 
