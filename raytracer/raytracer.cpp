@@ -256,6 +256,7 @@ void Raytracer::flushPixelBuffer( std::string file_name ) {
 
 Colour Raytracer::shadeRay( Ray3D& ray, int depth ) {
     Colour col(0.0, 0.0, 0.0); 
+    // Avoid infinite recursion
     if (depth >= 5) {return col;}
     traverseScene(_root, ray); 
 
@@ -285,21 +286,18 @@ Colour Raytracer::shadeRay( Ray3D& ray, int depth ) {
 		    reflecRay.dir = x * u + y * v + z * reflecDir;
 		    reflecRay.dir.normalize();
 		    // avoid same intersection
-		    reflecRay.origin = ray.intersection.point + 0.0001*ray.dir;
+		    reflecRay.origin = ray.intersection.point + 0.0001 * ray.dir;
 		    auto reflecCol = shadeRay(reflecRay, depth + 1);
+		    // make sure the relected ray has some meaningful color
 		    if (reflecCol[0] > 0.0 && reflecCol[1] > 0.0 && reflecCol[2] > 0.0){
-		    	// col = (1.0 - coeff) * ray.col + coeff * ray.intersection.mat->specular * reflecCol;
 		    	col = (1.0 - coeff) * ray.col + coeff * reflecCol;
 		    } else {
 		    	col = ray.col;
-		    	// ray.col = ray.col + ray.intersection.mat->specular * reflecCol;
 		    }
 			
 		}
     }
-    // col = ray.col;
 	col.clamp();
-
     return col; 
 }	
 
@@ -322,18 +320,20 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
             Point3D origin(0, 0, 0);
 			Point3D imagePlane;
 			imagePlane[2] = -1;
-			//Anti-aliasing by 9x supersampling
+			#define ANTI_ALIASING_RAY_COUNT 10
+			//Anti-aliasing, multiple rays per pixel
 			Colour col ;
-			for (int u=0; u< 10; u++){
-				for(int v=0; v< 10; v++){
-					imagePlane[0] = (-double(width)/2 + u*0.1 +0.5 + j)/factor;
-					imagePlane[1] = (-double(height)/2 + v*0.1 +0.5 + i)/factor;
+			for (int u=0; u< ANTI_ALIASING_RAY_COUNT; u++){
+				for(int v=0; v< ANTI_ALIASING_RAY_COUNT; v++){
+					imagePlane[0] = (-double(width)/2 + u * 1.0/ANTI_ALIASING_RAY_COUNT + 0.5 + j)/factor;
+					imagePlane[1] = (-double(height)/2 + v * 1.0/ANTI_ALIASING_RAY_COUNT + 0.5 + i)/factor;
  					Ray3D ray;
 					// initialize ray origin and direction in **WORLD** space
 					ray.origin = viewToWorld * origin;
 					ray.dir = viewToWorld * (imagePlane - origin);
 					ray.dir.normalize();
-					col = col + 1.0/100 * shadeRay(ray, 0); 
+					// average the contribution of each ray
+					col = col + 1.0/ANTI_ALIASING_RAY_COUNT/ANTI_ALIASING_RAY_COUNT * shadeRay(ray, 0); 
 				}
 			}
 			_rbuffer[i*width+j] = int(col[0]*255);

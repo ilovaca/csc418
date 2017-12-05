@@ -1,0 +1,42 @@
+REPORT
+
+Members:
+	Yeqi Shi 		(shiyeqi)
+	Bojian Zheng 	(zhengboj)
+
+Submission:
+	The submission is the entire "raytracer" directory, with output images named
+	according to the instructions.
+	
+	On top of original starter files, we have added some texture files, and source
+	files for texture mapping.
+
+
+Implemented Features:
+	All required features in part A
+	plus,
+	Advanced features:
+		Path tracing with BRDF
+		Non-trivial object: a cylinder
+		Anti-aliasing
+		Texture Mapping
+		Environment Mapping
+		Shadows
+
+External Resources:
+	Texture images from the internet
+	BRDF tutorial found online
+
+
+Role of Each Member:
+	Yeqi Shi implemented the following:
+		Phone Shading
+		BRDF
+		Shadows
+		Anti-aliasing
+
+	Bojian Zheng implemented the following:
+		Ray-object intersection
+		Texture Mapping
+		Environment Mapping
+		Non-trivial Object
