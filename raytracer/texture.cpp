@@ -14,6 +14,12 @@
 int width, height;
 GLubyte *textureImage;
 
+int env_width, env_height;
+GLubyte 
+	*envImage_front, *envImage_back, 
+	*envImage_left, *envImage_right,
+	*envImage_up, *envImage_down;
+
 bool loadPngImage(char *name, int &outWidth, int &outHeight, bool &outHasAlpha, GLubyte **outData) {
     png_structp png_ptr;
     png_infop info_ptr;
@@ -141,14 +147,27 @@ void texture_init()
      */
 	
     bool hasAlpha;
-    char filename[] = "earthmap.png";
-    bool success = loadPngImage(filename, width, height, hasAlpha, &textureImage);
+    char earthmap[]="earthmap.png";
+    bool success = loadPngImage(earthmap, width, height, hasAlpha, &textureImage);
     if (!success) {
         std::cout << "Unable to load png file" << std::endl;
         return;
     }
     std::cout << "Image loaded " << width << " " << height << " alpha " << hasAlpha << std::endl;
-    
+   
+    char cube_front[]="cube_front.png";
+    char cube_back[]="cube_back.png";
+    char cube_left[]="cube_left.png";
+    char cube_right[]="cube_right.png";
+    char cube_up[]="cube_up.png";
+    char cube_down[]="cube_down.png";
+    loadPngImage(cube_front, env_width, env_height, hasAlpha, &envImage_front);
+    loadPngImage(cube_back, env_width, env_height, hasAlpha, &envImage_back);
+    loadPngImage(cube_left, env_width, env_height, hasAlpha, &envImage_left);
+    loadPngImage(cube_right, env_width, env_height, hasAlpha, &envImage_right);
+    loadPngImage(cube_up, env_width, env_height, hasAlpha, &envImage_up);
+    loadPngImage(cube_down, env_width, env_height, hasAlpha, &envImage_down);
+ 
     /*
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTexImage2D(GL_TEXTURE_2D, 0, hasAlpha ? 4 : 3, width,
