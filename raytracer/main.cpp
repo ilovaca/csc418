@@ -15,6 +15,10 @@ Material _2D_Texture (Colour(0.3, 0.3, 0.3), Colour(0.75164, 0.60648, 0.22648),
 		Colour(0.628281, 0.555802, 0.366065),
 		51.2);
 
+Material EnvMapping (Colour(0.3, 0.3, 0.3), Colour(0.75164, 0.60648, 0.22648),
+                Colour(0.628281, 0.555802, 0.366065),
+                51.2);
+
 int main(int argc, char* argv[])
 {
 	// Build your scene and setup your camera here, by calling 
@@ -42,7 +46,7 @@ int main(int argc, char* argv[])
 
 	// Defines a material for shading.
 	_2D_Texture.reflection_coeff = 0.4;
-
+	EnvMapping.reflection_coeff = 0.4;
 
 	Material gold(Colour(0.3, 0.3, 0.3), Colour(0.75164, 0.60648, 0.22648),
 		Colour(0.628281, 0.555802, 0.366065),
@@ -59,7 +63,7 @@ int main(int argc, char* argv[])
 	// raytracer.addLightSource(new AreaLight(Point3D(0,0,50),
 	// 	1.0, Vector3D(0,0,-1), Colour(1.0, 1.0, 0.5)));
 	// Add a unit square into the scene with material mat.
-	SceneDagNode* sphere = raytracer.addObject(new UnitSphere(), &_2D_Texture);
+	SceneDagNode* sphere = raytracer.addObject(new UnitSphere(), &EnvMapping);
 	SceneDagNode* plane = raytracer.addObject(new UnitSquare(), &jade);
 	SceneDagNode* cylinder = raytracer.addObject(new UnitCylinder(), &gold);
 

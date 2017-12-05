@@ -19,6 +19,11 @@ extern int height;
 extern GLubyte *textureImage;
 extern Material _2D_Texture;
 
+extern int env_width;
+extern int env_height;
+extern GLubyte *envImage_pisa;
+extern Material EnvMapping;
+
 void PointLight::shade( Ray3D& ray ) {
 	// TODO: implement this function to fill in values for ray.col 
 	// using phong shading.  Make sure your vectors are normalized, and
@@ -46,6 +51,24 @@ void PointLight::shade( Ray3D& ray ) {
 		ray.col = ray.col + Colour(r, g, b);
 
 		return; 
+	}
+	if (ray.intersection.mat == &EnvMapping)
+	{
+		auto normal = ray.intersection.normal;
+                auto viewDir = -ray.dir;
+		auto reflectDir = 2.0 * viewDir.dot(normal)*normal - viewDir;
+		reflectDir.normalize();
+
+		int x = env_width  * (std::atan2(reflectDir[0], reflectDir[2]) / (2 * M_PI) + 0.5);
+		int y = env_height * (std::asin (reflectDir[1]) / M_PI + 0.5);
+
+		float r = envImage_pisa[y * 3 * env_width + x * 3 + 0] * 1.0 / 255;
+		float g = envImage_pisa[y * 3 * env_width + x * 3 + 1] * 1.0 / 255;
+		float b = envImage_pisa[y * 3 * env_width + x * 3 + 2] * 1.0 / 255;
+
+		ray.col = ray.col + Colour(r, g, b);
+
+		return;
 	}
 
 	// light direction

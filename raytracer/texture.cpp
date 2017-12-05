@@ -20,6 +20,8 @@ GLubyte
 	*envImage_left, *envImage_right,
 	*envImage_up, *envImage_down;
 
+GLubyte *envImage_pisa;
+
 bool loadPngImage(char *name, int &outWidth, int &outHeight, bool &outHasAlpha, GLubyte **outData) {
     png_structp png_ptr;
     png_infop info_ptr;
@@ -154,7 +156,8 @@ void texture_init()
         return;
     }
     std::cout << "Image loaded " << width << " " << height << " alpha " << hasAlpha << std::endl;
-   
+  
+    /* 
     char cube_front[]="cube_front.png";
     char cube_back[]="cube_back.png";
     char cube_left[]="cube_left.png";
@@ -167,7 +170,11 @@ void texture_init()
     loadPngImage(cube_right, env_width, env_height, hasAlpha, &envImage_right);
     loadPngImage(cube_up, env_width, env_height, hasAlpha, &envImage_up);
     loadPngImage(cube_down, env_width, env_height, hasAlpha, &envImage_down);
- 
+     */
+
+    char pisa[]="pisa.png";
+
+    loadPngImage(pisa, env_width, env_height, hasAlpha, &envImage_pisa);
     /*
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTexImage2D(GL_TEXTURE_2D, 0, hasAlpha ? 4 : 3, width,
