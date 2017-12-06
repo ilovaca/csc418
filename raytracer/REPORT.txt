@@ -29,6 +29,10 @@ External Resources:
 
 
 Role of Each Member:
+  Yeqi is mainly responsible for the overall path tracing algorithm, such as
+  anti aliasing, shadows, etc. Bojian is responsible for more detailed features,
+  such as texture mapping.
+   
 	Yeqi Shi implemented the following:
 		Phone Shading
 		BRDF
