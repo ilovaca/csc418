@@ -52,6 +52,7 @@ void PointLight::shade( Ray3D& ray ) {
 
 		return; 
 	}
+	/*
 	if (ray.intersection.mat == &EnvMapping)
 	{
 		auto normal = ray.intersection.normal;
@@ -70,7 +71,7 @@ void PointLight::shade( Ray3D& ray ) {
 
 		return;
 	}
-
+	 */
 	// light direction
 	auto lightDir = (_pos - point);
 	lightDir.normalize();
